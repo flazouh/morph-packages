@@ -1,6 +1,6 @@
 # Morph packages
 
-Redesigns for [Morph](https://github.com/flazouh), one folder per package.
+Redesigns for [Morph](https://github.com/flazouh/morph), one folder per package.
 
 Morph's marketplace keeps no code. Its database holds a manifest, a version and a set of
 sha256 digests, and it builds every file address from an owner, a repository, a commit and
@@ -15,8 +15,8 @@ flazouh/gitquiet/
   manifest.json        what the package is, and every capability it asks for
   script.js            the built artifact the sandbox runs
   style.css            the package's stylesheet
-  preview-before.png   the page without the package
-  preview-after.png    the same page with it
+  preview-before.webp  the page without the package
+  preview-after.webp   the same page with it
   source/              the code the artifact was built from
 ```
 
