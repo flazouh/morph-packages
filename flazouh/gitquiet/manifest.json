@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "slug": "flazouh/gitquiet",
+  "version": "1.0.0",
+  "summary": "A quieter GitHub pull request inbox: one list, keyboard first, no sidebar.",
+  "license": "MIT",
+  "author": {
+    "handle": "flazouh"
+  },
+  "scope": {
+    "kind": "page",
+    "origin": "https://github.com",
+    "paths": [
+      "/pulls",
+      "/pulls/inbox"
+    ]
+  },
+  "runtime": "sandbox-v1",
+  "entry": "source/entry.tsx",
+  "files": {
+    "source/entry.tsx": "sha256:ef6f84fb7be52981b37304ee79749472bae390bad4e82ce7d72f77476bcd98a4"
+  },
+  "compatibility": {
+    "kit": "^1.0.0",
+    "chrome": ">=120"
+  },
+  "artifacts": {
+    "script": "sha256:c1e8cc42395e0d7c9063a85d61760f56a66ccb0afbbb91b49ccafbb232828c45",
+    "css": "sha256:d7d06146763ba08b863d0290eb6bfdd59d6ec0772655ab973ff0b43d62517447"
+  },
+  "previews": {
+    "before": "preview-before.png",
+    "after": "preview-after.png"
+  },
+  "permissions": {
+    "page": [
+      "read"
+    ],
+    "network": [
+      "https://github.com"
+    ]
+  },
+  "capabilities": {
+    "takeover": {
+      "slot": "[data-testid=\"pulls-dashboard-surface-layout\"]",
+      "fallback": "react-app[app-name=\"dashboard-surface\"]"
+    },
+    "page": {
+      "read": [],
+      "navigate": [
+        "https://github.com"
+      ],
+      "traverse": true
+    },
+    "network": [
+      {
+        "origin": "https://github.com",
+        "paths": [
+          "/pulls/inbox/queries",
+          "/pulls/inbox/deferred",
+          "/search",
+          "/_filter/repositories",
+          "/*/*/pull/*/page_data/merge_box",
+          "/*/*/pull/*/page_data/diffstat",
+          "/*/*/pull/*/page_data/close_pull_request",
+          "/*/*/pull/*/page_data/reopen_pull_request",
+          "/*/*/pull/*/page_data/mark_ready_for_review",
+          "/*/*/pull/*/page_data/convert_to_draft",
+          "/*/*/pull/*/page_data/merge",
+          "/*/*/pull/*/page_data/enqueue_stack"
+        ],
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "credentials": "include",
+        "headers": [
+          "Accept",
+          "X-Requested-With",
+          "Content-Type",
+          "GitHub-Verified-Fetch"
+        ]
+      }
+    ],
+    "storage": true,
+    "context": {
+      "viewer": true,
+      "theme": true,
+      "route": true
+    },
+    "assets": [
+      "https://github.com",
+      "https://avatars.githubusercontent.com"
+    ],
+    "secureForms": []
+  }
+}

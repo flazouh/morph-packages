@@ -1,0 +1,203 @@
+import { Option, Schema } from "effect"
+import { asLanded } from "./landed"
+import type {
+  CheckRollup,
+  InvolvedPullRequest,
+  Opinion,
+  Shelf,
+  Size,
+  Standings
+} from "../domain/workingSet"
+import { whereverItIs } from "./wherever"
+import { DeferredRoute, DiffstatRoute, LooseListing, WorkingSetRow } from "./wire"
+
+// LooseListing, not Listing: the page is found by its rows array and each row is
+// decoded on its own below, so one row GitHub changed drops rather than blanking
+// the page. The strict Listing is what `check-drift` reads a live page against.
+export const decodeShelf = whereverItIs(LooseListing)
+export const decodeQuery = whereverItIs(LooseListing)
+export const decodeDeferred = whereverItIs(DeferredRoute)
+export const decodeDiffstat = whereverItIs(DiffstatRoute)
+
+/** One row, decoded on its own, so a row that will not decode is a row and not the page. */
+const decodeRow = Schema.decodeUnknownOption(WorkingSetRow)
+
+/**
+ * Turning GitHub's Working Set rows into Involved Pull Requests.
+ *
+ * The same job `snapshot.ts` does for one pull request's own routes, for the
+ * two routes that answer about many. Kept apart from it because they share no
+ * payload and no field: a row is a twenty-six field summary of a pull request
+ * nobody has opened, and a snapshot is the whole of one somebody has.
+ */
+
+/** `owner/repo`, which is how the Working Set names a repository. */
+const splitRepo = (nameWithOwner: string): Option.Option<{ owner: string; repo: string }> => {
+  const at = nameWithOwner.indexOf("/")
+  if (at <= 0 || at === nameWithOwner.length - 1) return Option.none()
+
+  const owner = nameWithOwner.slice(0, at)
+  const repo = nameWithOwner.slice(at + 1)
+  // A second slash means this is not `owner/repo` and guessing which half is
+  // which would build a URL that quietly reads the wrong pull request.
+  return repo.includes("/") ? Option.none() : Option.some({ owner, repo })
+}
+
+/**
+ * A draft is a state here and a flag there.
+ *
+ * GitHub reports a draft as `OPEN` with `isDraft` set, while everything above
+ * this treats draft as one of the four states a pull request is in — because a
+ * draft can be neither merged nor queued, which is a difference in kind rather
+ * than a decoration on an open one.
+ */
+const stateOf = (row: WorkingSetRow): InvolvedPullRequest["state"] => {
+  if (row.state === "MERGED") return "merged"
+  if (row.state === "CLOSED") return "closed"
+  return row.isDraft || row.state === "DRAFT" ? "draft" : "open"
+}
+
+const nothing = <T>(value: T | null | undefined): Option.Option<T> =>
+  value === null || value === undefined ? Option.none() : Option.some(value)
+
+/**
+ * One row as an Involved Pull Request, or nothing where it cannot be addressed.
+ *
+ * None rather than a failure: a row whose repository name this cannot split is
+ * one pull request that will not be drawn, and refusing the whole payload over
+ * it would cost the Participant their entire Working Set instead.
+ */
+export const involvedFrom = (
+  shelf: Option.Option<Shelf>,
+  row: WorkingSetRow
+): Option.Option<InvolvedPullRequest> =>
+  Option.map(splitRepo(row.repoNameWithOwner), ({ owner, repo }) => ({
+    reference: { owner, repo, number: row.number },
+    // `String()` because the id is opaque and GitHub has sent it as both a number
+    // and a string — see {@link OpaqueId}. Normalised here so the rest of the
+    // codebase keys by one type, and so a row and the deferred answer about it
+    // match whichever shape GitHub is sending this week.
+    id: String(row.id),
+    title: row.title,
+    author: {
+      // A row without an author is one whose account is gone. GitHub renders
+      // those as `ghost`, and so does everything else here that meets one.
+      login: row.author?.displayLogin ?? "ghost",
+      isAutomated: row.authoredByAgent ?? false,
+      // Rows carry no avatar. `faceOf` builds one from the login, which is what
+      // every other face in this interface is already built from.
+      faceUrl: Option.none()
+    },
+    state: stateOf(row),
+    shelf,
+    why: nothing(row.category),
+    readByViewer: row.isReadByCurrentUser,
+    comments: row.commentCount,
+    labels: row.labels.length,
+    assignees: row.assignees.length,
+    openedAt: row.createdAt,
+    changedAt: row.updatedAt,
+    headSha: row.headSha,
+    channels: Option.match(nothing(row.commitHeadShaChannel), {
+      onNone: (): ReadonlyArray<string> => [],
+      onSome: (channel) => (channel.length > 0 ? [channel] : [])
+    }),
+    checks: Option.none(),
+    reviewed: Option.none(),
+    size: Option.none()
+  }))
+
+/**
+ * Every row of a listing that can be read and addressed, in the order GitHub gave them.
+ *
+ * Each row is decoded on its own from the raw listing, so a row whose shape GitHub
+ * changed is dropped rather than failing the whole page — the difference between a
+ * repository's list drawn short and drawn blank. A row that decodes but cannot be
+ * addressed is dropped the same way, for the reason `involvedFrom` gives. The rows
+ * arrive undecoded because the runtime reads {@link LooseListing}; see it for why.
+ *
+ * The shelf is passed rather than read because a row does not carry it: it is the
+ * request that knew which shelf was being asked for. None where the listing was a
+ * plain query and so no shelf was involved at all.
+ *
+ * A count of rows that would not decode is warned in a development build, the way
+ * `gateAudit` warns a stale takeover: nothing is sent anywhere, and a maintainer
+ * running the canary sees a shape change reach the rows before a reader does.
+ */
+export const involvedIn = (
+  shelf: Option.Option<Shelf>,
+  rows: ReadonlyArray<unknown>
+): ReadonlyArray<InvolvedPullRequest> => {
+  let undecodable = 0
+  const involved = rows.flatMap((raw): ReadonlyArray<InvolvedPullRequest> => {
+    const row = decodeRow(raw)
+    if (Option.isNone(row)) {
+      undecodable += 1
+      return []
+    }
+    return Option.match(involvedFrom(shelf, row.value), {
+      onNone: (): ReadonlyArray<InvolvedPullRequest> => [],
+      // Wearing whatever a write of ours has since made true. Here because this is
+      // the one function every listing passes through — the six shelves, a
+      // repository's own list, and both of those again out of the store. It was
+      // done at the call sites instead, and the second call site was missed, which
+      // is how a merged pull request went on sitting in a repository's list.
+      onSome: (one) => [asLanded(one)]
+    })
+  })
+
+  if (undecodable > 0 && import.meta.env.DEV) {
+    // eslint-disable-next-line no-console -- dev-only, never in a shipped build
+    console.warn(
+      `[gitquiet] dropped ${undecodable} of ${rows.length} listing rows that would not decode`
+    )
+  }
+
+  return involved
+}
+
+/**
+ * Their five status states as the three a row can draw.
+ *
+ * `ERROR` and `EXPECTED` join `PENDING` rather than `FAILURE`: a run that
+ * errored has not reported a verdict on the branch, and one still expected has
+ * not started. Neither is a check the Participant can go and fix yet, which is
+ * the only thing calling it failing would be for.
+ */
+const rollupState = (state: string): CheckRollup["state"] => {
+  if (state === "SUCCESS") return "passing"
+  return state === "FAILURE" ? "failing" : "running"
+}
+
+const opinionOf = (decision: string): Opinion => {
+  if (decision === "APPROVED") return "approved"
+  return decision === "CHANGES_REQUESTED" ? "changes-requested" : "review-required"
+}
+
+/** GitHub's two counts under the names the rest of this codebase uses. */
+export const sizeIn = (route: DiffstatRoute): Size => ({
+  added: route.diffstat.linesAdded,
+  deleted: route.diffstat.linesDeleted
+})
+
+export const standingsIn = (route: DeferredRoute): Standings => {
+  const found = new Map<
+    string,
+    { checks: Option.Option<CheckRollup>; reviewed: Option.Option<Opinion> }
+  >()
+
+  for (const result of route.results) {
+    // `String()` for the reason `involvedFrom` gives: an opaque id GitHub sends
+    // as a number or a string, keyed here the one way the rows are keyed.
+    found.set(String(result.id), {
+      checks: Option.map(nothing(result.statusCheckRollup), (rollup) => ({
+        state: rollupState(rollup.state),
+        total: rollup.totalCount,
+        passed: rollup.successCount
+      })),
+      reviewed: Option.map(nothing(result.reviewDecisionState), opinionOf)
+    })
+  }
+
+  return found
+}
