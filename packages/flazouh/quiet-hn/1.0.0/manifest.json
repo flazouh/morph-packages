@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "slug": "flazouh/quiet-hn",
+  "version": "1.0.0",
+  "summary": "A calm, centered Hacker News front page: one bordered list pane, generous line height, HN orange on the rank and upvote caret only.",
+  "license": "MIT",
+  "author": {
+    "handle": "flazouh"
+  },
+  "scope": {
+    "kind": "page",
+    "origin": "https://news.ycombinator.com",
+    "paths": [
+      "/"
+    ]
+  },
+  "runtime": "script-v1",
+  "entry": "page.tsx",
+  "files": {
+    "components/Row.tsx": "sha256:e07d170ffbaad363fab6db21b427337d5c7951a8edc65d3446edd2004201b13a",
+    "design.css": "sha256:ad310c8e184b7f26cda7ad88c7a3345dca4839c1e3704b5f4989dcfba6edeb09",
+    "page.tsx": "sha256:61379ec7648e2d0e377b5f25cdf2897af506d592e6c5e0e41bd0d819822b8f69",
+    "style.css": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "compatibility": {
+    "kit": "^1.0.0",
+    "chrome": ">=120"
+  },
+  "artifacts": {
+    "script": "sha256:f132373d12f35ce3b1625b660c50328d1c8bc80a8589351c88aa02a6ce5fb133",
+    "css": "sha256:ad310c8e184b7f26cda7ad88c7a3345dca4839c1e3704b5f4989dcfba6edeb09"
+  },
+  "previews": {
+    "before": "sha256:13f963deab46ead54c5491b80db817f251762f42d9db388762b679efde13a6d6",
+    "after": "sha256:13f963deab46ead54c5491b80db817f251762f42d9db388762b679efde13a6d6"
+  },
+  "permissions": {
+    "page": [
+      "read:text",
+      "read:attributes",
+      "navigate"
+    ],
+    "network": []
+  }
+}

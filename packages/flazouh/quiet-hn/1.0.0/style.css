@@ -1,0 +1,68 @@
+:root,
+:root[data-beui-theme="light"],
+:root[data-beui-theme="dark"] {
+  --accent: #ff6600;
+  --accent-foreground: #ffffff;
+  --background: #fbfaf8;
+  --border: rgba(25, 24, 23, 0.08);
+  --border-strong: rgba(25, 24, 23, 0.16);
+  --card: #ffffff;
+  --card-foreground: #191817;
+  --destructive: #c8342a;
+  --destructive-foreground: #ffffff;
+  --foreground: #191817;
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(25, 24, 23, 0.10);
+  --glass-strong-bg: rgba(255, 255, 255, 0.90);
+  --glass-thin-bg: rgba(255, 255, 255, 0.55);
+  --gradient-accent: linear-gradient(135deg, #ff6600 0%, #ffa15c 100%);
+  --gradient-bg: linear-gradient(180deg, #fbfaf8 0%, #f4f1ec 100%);
+  --input: rgba(25, 24, 23, 0.14);
+  --muted: #f3f1ed;
+  --muted-foreground: #6e6a64;
+  --neon: #ff8a3d;
+  --popover: #ffffff;
+  --popover-foreground: #191817;
+  --primary: #191817;
+  --primary-foreground: #fbfaf8;
+  --radius: 0.875rem;
+  --ring: #ff6600;
+  --secondary: #f1efeb;
+  --secondary-foreground: #191817;
+  --success: #2e7d55;
+  --violet: #6d5ae0;
+  --warning: #b0700f;
+}
+:root[data-beui-theme="dark"] {
+  --accent: #ff7a1a;
+  --accent-foreground: #180d04;
+  --background: #100f0e;
+  --border: rgba(242, 240, 236, 0.10);
+  --border-strong: rgba(242, 240, 236, 0.18);
+  --card: #181716;
+  --card-foreground: #f2f0ec;
+  --destructive: #e5544a;
+  --destructive-foreground: #180d04;
+  --foreground: #f2f0ec;
+  --glass-bg: rgba(24, 23, 22, 0.72);
+  --glass-border: rgba(242, 240, 236, 0.12);
+  --glass-strong-bg: rgba(24, 23, 22, 0.90);
+  --glass-thin-bg: rgba(24, 23, 22, 0.50);
+  --gradient-accent: linear-gradient(135deg, #ff7a1a 0%, #ffb877 100%);
+  --gradient-bg: linear-gradient(180deg, #100f0e 0%, #17140f 100%);
+  --input: rgba(242, 240, 236, 0.16);
+  --muted: #1f1d1b;
+  --muted-foreground: #a39c93;
+  --neon: #ff9d4d;
+  --popover: #1b1a18;
+  --popover-foreground: #f2f0ec;
+  --primary: #f2f0ec;
+  --primary-foreground: #100f0e;
+  --radius: 0.875rem;
+  --ring: #ff7a1a;
+  --secondary: #221f1d;
+  --secondary-foreground: #f2f0ec;
+  --success: #4fae7d;
+  --violet: #9a8cf5;
+  --warning: #d9a13b;
+}
