@@ -8,10 +8,12 @@ a path on `raw.githubusercontent.com`. This repository is where those addresses 
 
 ## Layout
 
-A package lives at `<author>/<name>`, which is also its slug:
+A release lives at `packages/<author>/<name>/<version>`. The first two parts are the
+package's slug; the third is the version, so every release a package ever had keeps its
+own folder and the addresses of an older one never move:
 
 ```
-flazouh/gitquiet/
+packages/flazouh/gitquiet/1.0.0/
   manifest.json        what the package is, and every capability it asks for
   script.js            the built artifact the sandbox runs
   style.css            the package's stylesheet
@@ -19,6 +21,9 @@ flazouh/gitquiet/
   preview-after.webp   the same page with it
   source/              the code the artifact was built from
 ```
+
+Morph writes this path itself when a reader publishes from the extension, so nothing here
+is arranged by hand.
 
 The source travels with the build on purpose. A reader is asked to check the code before
 installing it, and a digest they cannot read anything against proves nothing.
@@ -28,6 +33,7 @@ installing it, and a digest they cannot read anything against proves nothing.
 | Package | Site | Pages | Runtime |
 | --- | --- | --- | --- |
 | `flazouh/gitquiet` | github.com | `/pulls`, `/pulls/inbox` | `sandbox-v1` |
+| `flazouh/quiet-hn` | news.ycombinator.com | `/` | `script-v1` |
 
 ## Capabilities
 
@@ -51,5 +57,5 @@ The artifacts here are built from the Morph repository:
 
 ```
 bun run build
-bun scripts/pack-gitquiet.ts ../morph-packages/flazouh/gitquiet
+bun scripts/pack-gitquiet.ts ../morph-packages/packages/flazouh/gitquiet/1.0.0
 ```
