@@ -27,7 +27,7 @@
     "chrome": ">=120"
   },
   "artifacts": {
-    "script": "sha256:f132373d12f35ce3b1625b660c50328d1c8bc80a8589351c88aa02a6ce5fb133",
+    "script": "sha256:92943e804b7d2631068d1e2f60d1823eb93e9ef81caee4f6d3b3b51a3439894f",
     "css": "sha256:ad310c8e184b7f26cda7ad88c7a3345dca4839c1e3704b5f4989dcfba6edeb09"
   },
   "previews": {

@@ -3,109 +3,6 @@ var __inlined = {
 
 };
 var __files = {
-"page.tsx": function (require, exports, module) {
-"use strict";var _jsxruntime = require("react/jsx-runtime");Object.defineProperty(exports, "__esModule", {value: true});var _react = require('react');
-var _beui = require('beui');
-var _Row = require('./components/Row');
-
- const target = "#hnmain"; exports.target = target
-
-
-
-
-
-
-const text = (el) =>
-  (el?.textContent ?? "").replace(/\s+/g, " ").trim()
-
-const count = (value) => {
-  const match = value.match(/\d[\d,]*/)
-  return match ? Number(match[0].replace(/,/g, "")) : null
-}
-
-const readStories = () =>
-  Array.from(document.querySelectorAll("#hnmain tr.athing")).map((row, index) => {
-    const sub = row.nextElementSibling
-    const titleLink = row.querySelector(".titleline a")
-    const siteLink = row.querySelector(".sitebit a")
-    const author = sub?.querySelector("a.hnuser") ?? null
-    const age = sub?.querySelector(".age a") ?? null
-    const subLinks = Array.from(sub?.querySelectorAll("a") ?? [])
-    const comments = subLinks.filter((link) => /comment|discuss/i.test(text(link))).pop() ?? null
-
-    return {
-      id: row.id,
-      rank: text(row.querySelector(".rank")).replace(".", "") || String(index + 1),
-      title: text(titleLink) || "(untitled)",
-      href: titleLink?.href ?? "",
-      site: text(siteLink),
-      siteHref: siteLink?.href ?? "",
-      points: count(text(sub?.querySelector(".score"))),
-      author: text(author),
-      authorHref: author?.href ?? "",
-      age: text(age) || text(sub?.querySelector(".age")),
-      ageHref: age?.href ?? "",
-      commentLabel: text(comments) || "discuss",
-      commentCount: comments ? count(text(comments)) : null,
-      commentsHref: comments?.href ?? age?.href ?? "",
-    }
-  })
-
-const readNav = () =>
-  Array.from(document.querySelectorAll("#hnmain .pagetop a"))
-    .filter((link) => !link.closest(".hnname"))
-    .map((link) => ({ label: text(link), href: link.href }))
-    .filter((link) => link.label.length > 0)
-
-const readMore = () => {
-  const link = document.querySelector("#hnmain a.morelink")
-  return link ? { label: text(link) || "More", href: link.href } : null
-}
-
- function Page() {
-  const stories = _react.useMemo.call(void 0, readStories, [])
-  const nav = _react.useMemo.call(void 0, readNav, [])
-  const more = _react.useMemo.call(void 0, readMore, [])
-
-  return (
-    _jsxruntime.jsx.call(void 0, 'main', { className: "min-h-screen bg-background font-sans text-foreground antialiased"    , children: 
-      _jsxruntime.jsxs.call(void 0, 'div', { className: "mx-auto flex max-w-3xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-10"        , children: [
-        _jsxruntime.jsxs.call(void 0, 'header', { className: "flex flex-col gap-4"  , children: [
-          _jsxruntime.jsxs.call(void 0, 'div', { className: "flex items-center gap-3"  , children: [
-            _jsxruntime.jsx.call(void 0, 'p', { className: "text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground"    , children: "Front page" })
-            , _jsxruntime.jsxs.call(void 0, _beui.Badge, { status: "neutral", size: "sm", children: [
-              stories.length, " stories"
-            ]})
-          ]})
-          , _jsxruntime.jsx.call(void 0, _beui.TextReveal, { as: "h1", text: "Hacker News" , className: "text-2xl font-medium tracking-tight"  ,} )
-          , _jsxruntime.jsx.call(void 0, 'nav', { className: "-ml-2 flex flex-wrap items-center gap-1"    , children: 
-            nav.map((link) => (
-              _jsxruntime.jsx.call(void 0, _beui.ButtonLink, { href: link.href, variant: "ghost", size: "sm", children: 
-                link.label
-              }, link.label + link.href)
-            ))
-          })
-        ]})
-
-        , _jsxruntime.jsx.call(void 0, 'ul', { className: "divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card"      , children: 
-          stories.map((story) => (
-            _jsxruntime.jsx.call(void 0, _Row.Row, { story: story,}, story.id || story.href )
-          ))
-        })
-
-        , more ? (
-          _jsxruntime.jsx.call(void 0, 'div', { className: "flex justify-center" , children: 
-            _jsxruntime.jsx.call(void 0, _beui.ButtonLink, { href: more.href, variant: "outline", size: "sm", children: 
-              more.label
-            })
-          })
-        ) : null
-      ]})
-    })
-  )
-} exports.default = Page;
-
-},
 "components/Row.tsx": function (require, exports, module) {
 "use strict";var _jsxruntime = require("react/jsx-runtime");Object.defineProperty(exports, "__esModule", {value: true});var _react = require('@hugeicons/react');
 var _corefreeicons = require('@hugeicons/core-free-icons');
@@ -212,9 +109,112 @@ const upvote = (id) => {
   )
 } exports.Row = Row;
 
+},
+"page.tsx": function (require, exports, module) {
+"use strict";var _jsxruntime = require("react/jsx-runtime");Object.defineProperty(exports, "__esModule", {value: true});var _react = require('react');
+var _beui = require('beui');
+var _Row = require('./components/Row');
+
+ const target = "#hnmain"; exports.target = target
+
+
+
+
+
+
+const text = (el) =>
+  (el?.textContent ?? "").replace(/\s+/g, " ").trim()
+
+const count = (value) => {
+  const match = value.match(/\d[\d,]*/)
+  return match ? Number(match[0].replace(/,/g, "")) : null
+}
+
+const readStories = () =>
+  Array.from(document.querySelectorAll("#hnmain tr.athing")).map((row, index) => {
+    const sub = row.nextElementSibling
+    const titleLink = row.querySelector(".titleline a")
+    const siteLink = row.querySelector(".sitebit a")
+    const author = sub?.querySelector("a.hnuser") ?? null
+    const age = sub?.querySelector(".age a") ?? null
+    const subLinks = Array.from(sub?.querySelectorAll("a") ?? [])
+    const comments = subLinks.filter((link) => /comment|discuss/i.test(text(link))).pop() ?? null
+
+    return {
+      id: row.id,
+      rank: text(row.querySelector(".rank")).replace(".", "") || String(index + 1),
+      title: text(titleLink) || "(untitled)",
+      href: titleLink?.href ?? "",
+      site: text(siteLink),
+      siteHref: siteLink?.href ?? "",
+      points: count(text(sub?.querySelector(".score"))),
+      author: text(author),
+      authorHref: author?.href ?? "",
+      age: text(age) || text(sub?.querySelector(".age")),
+      ageHref: age?.href ?? "",
+      commentLabel: text(comments) || "discuss",
+      commentCount: comments ? count(text(comments)) : null,
+      commentsHref: comments?.href ?? age?.href ?? "",
+    }
+  })
+
+const readNav = () =>
+  Array.from(document.querySelectorAll("#hnmain .pagetop a"))
+    .filter((link) => !link.closest(".hnname"))
+    .map((link) => ({ label: text(link), href: link.href }))
+    .filter((link) => link.label.length > 0)
+
+const readMore = () => {
+  const link = document.querySelector("#hnmain a.morelink")
+  return link ? { label: text(link) || "More", href: link.href } : null
+}
+
+ function Page() {
+  const stories = _react.useMemo.call(void 0, readStories, [])
+  const nav = _react.useMemo.call(void 0, readNav, [])
+  const more = _react.useMemo.call(void 0, readMore, [])
+
+  return (
+    _jsxruntime.jsx.call(void 0, 'main', { className: "min-h-screen bg-background font-sans text-foreground antialiased"    , children: 
+      _jsxruntime.jsxs.call(void 0, 'div', { className: "mx-auto flex max-w-3xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-10"        , children: [
+        _jsxruntime.jsxs.call(void 0, 'header', { className: "flex flex-col gap-4"  , children: [
+          _jsxruntime.jsxs.call(void 0, 'div', { className: "flex items-center gap-3"  , children: [
+            _jsxruntime.jsx.call(void 0, 'p', { className: "text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground"    , children: "Front page" })
+            , _jsxruntime.jsxs.call(void 0, _beui.Badge, { status: "neutral", size: "sm", children: [
+              stories.length, " stories"
+            ]})
+          ]})
+          , _jsxruntime.jsx.call(void 0, _beui.TextReveal, { as: "h1", text: "Hacker News" , className: "text-2xl font-medium tracking-tight"  ,} )
+          , _jsxruntime.jsx.call(void 0, 'nav', { className: "-ml-2 flex flex-wrap items-center gap-1"    , children: 
+            nav.map((link) => (
+              _jsxruntime.jsx.call(void 0, _beui.ButtonLink, { href: link.href, variant: "ghost", size: "sm", children: 
+                link.label
+              }, link.label + link.href)
+            ))
+          })
+        ]})
+
+        , _jsxruntime.jsx.call(void 0, 'ul', { className: "divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card"      , children: 
+          stories.map((story) => (
+            _jsxruntime.jsx.call(void 0, _Row.Row, { story: story,}, story.id || story.href )
+          ))
+        })
+
+        , more ? (
+          _jsxruntime.jsx.call(void 0, 'div', { className: "flex justify-center" , children: 
+            _jsxruntime.jsx.call(void 0, _beui.ButtonLink, { href: more.href, variant: "outline", size: "sm", children: 
+              more.label
+            })
+          })
+        ) : null
+      ]})
+    })
+  )
+} exports.default = Page;
+
 }
 };
-var __links = {"page.tsx":{"./components/Row":"components/Row.tsx"},"components/Row.tsx":{}};
+var __links = {"components/Row.tsx":{},"page.tsx":{"./components/Row":"components/Row.tsx"}};
 var __cache = {};
 function __load(path) {
   if (__cache[path]) return __cache[path].exports;
