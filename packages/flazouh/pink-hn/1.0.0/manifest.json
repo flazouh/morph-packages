@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "slug": "flazouh/pink-hn",
+  "version": "1.0.0",
+  "summary": "Quiet Hacker News with hot pink story titles",
+  "license": "MIT",
+  "author": {
+    "handle": "flazouh"
+  },
+  "scope": {
+    "kind": "page",
+    "origin": "https://news.ycombinator.com",
+    "paths": [
+      "/"
+    ]
+  },
+  "runtime": "script-v1",
+  "entry": "page.tsx",
+  "files": {
+    "components/Row.tsx": "sha256:590b1256bc2be8ca9fa1e7098699c4df19e50def0716fcb8268fd3fef691dc87",
+    "design.css": "sha256:ad310c8e184b7f26cda7ad88c7a3345dca4839c1e3704b5f4989dcfba6edeb09",
+    "page.tsx": "sha256:61379ec7648e2d0e377b5f25cdf2897af506d592e6c5e0e41bd0d819822b8f69",
+    "style.css": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "compatibility": {
+    "kit": "^1.0.0",
+    "chrome": ">=120"
+  },
+  "artifacts": {
+    "script": "sha256:c507d0c1773c948a67d46d837d424b46582a610d466fe29b8e157e4c2ee64394",
+    "css": "sha256:ad310c8e184b7f26cda7ad88c7a3345dca4839c1e3704b5f4989dcfba6edeb09"
+  },
+  "previews": {
+    "before": "sha256:9ebea7867d1600590a62d73fef4db129326186ef403280c4b1b0bf3cd5282202",
+    "after": "sha256:ae042e6074f06396c4909305cfcc73970035cf4a879f42b4e11a92b996abc98f"
+  },
+  "permissions": {
+    "page": [
+      "read:text",
+      "read:attributes",
+      "navigate"
+    ],
+    "network": []
+  }
+}
