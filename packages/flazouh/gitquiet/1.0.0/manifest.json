@@ -18,7 +18,6 @@
   "runtime": "sandbox-v1",
   "entry": "entry.tsx",
   "files": {
-    "PACKAGES.md": "sha256:7e94481e1d148f4eadf86ddec47bd271cd534e58b1fb1bbdf7aed4823a1704b9",
     "app/intent.ts": "sha256:4d124394c6035004ab3006bb13813ae4ab43848be2464af8e46874f86cf1c728",
     "app/keyboard.ts": "sha256:3dc9b33f9e6ce6517856c1286dc78623c16f5051124b7c8333d8b2e2d7fc8268",
     "app/pullRequest.ts": "sha256:ff45c758953ba3fcf9040779689f47e8bca1d4ec8673a49a1b004ecd038da23d",
